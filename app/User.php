@@ -41,4 +41,24 @@ class User extends Authenticatable
     public $incrementing = false;
 
     protected $keyType = 'string';
+
+    public function getName()
+    {
+        if ($this->first_name && $this->last_name)
+        {
+            return "{$this->first_name} {$this->last_name}";
+        }
+
+        if ($this->first_name)
+        {
+            return $this->first_name;
+        }
+        return null;
+    }
+
+    public function getNameorUsername()
+    {
+       return $this->getName() ?: $this->username;
+    }
+
 }

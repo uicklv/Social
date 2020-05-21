@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Ramsey\Uuid\Uuid;
 
 class AuthController extends Controller
@@ -30,5 +31,33 @@ class AuthController extends Controller
         $user->save();
 
         return redirect()->route('home')->with('info', 'Вы успешно зарегестрировались! Выполните вход.');
+    }
+
+    public function getSignIn()
+    {
+        return view('auth.signin');
+    }
+
+    public function postSignIn(Request $request)
+    {
+        $this->validate($request, [
+            'email' => 'required|max:255',
+            'password' => 'required|min:8',
+        ] );
+
+        if (!Auth::attempt($request->only(['email', 'password']), $request->has('remember')))
+        {
+            return redirect()->back()->with('info', 'Неверный логин или пароль.');
+        }
+
+        $user = Auth::user();
+        return redirect()->route('home')->with('info', 'Вы успешно вошли как ' . $user->username);
+
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+        return  redirect()->route('home');
     }
 }

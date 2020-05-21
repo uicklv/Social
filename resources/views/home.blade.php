@@ -3,5 +3,5 @@
 @section('title', 'Добро пожаловать')
 
 @section('content')
-    hello!
+    <h3>Добро пожаловать @if(\Illuminate\Support\Facades\Auth::user()) {{\Illuminate\Support\Facades\Auth::user()->getNameorUsername()}} @endif</h3>
 @endsection

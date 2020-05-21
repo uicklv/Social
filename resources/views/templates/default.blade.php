@@ -14,25 +14,26 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-                <a class="navbar-brand" href="#">Navbar</a>
+                <a class="navbar-brand" href="{{route('home')}}">SOC</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-
+                @if(!\Illuminate\Support\Facades\Auth::user())
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item">
                             <a class="nav-link" href="{{route('signup.index')}}">Регистрация</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Вход</a>
+                            <a class="nav-link" href="{{route('signin.get')}}">Вход</a>
                         </li>
                     </ul>
                 </div>
+                @endif
         </div>
     </nav>
         <div class="container">
-            <div class="row">
+            <div class="row mb-4">
                     <div class="col align-middle" style="height:50px">
                         @if(session()->has('info'))
                                 <div class="alert alert-primary mt-2" role="alert">
@@ -46,16 +47,10 @@
                     @if(\Illuminate\Support\Facades\Auth::check())
                     <ul class="nav flex-column mt-4">
                         <li class="nav-item">
-                            <a class="nav-link active" href="#">Active</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href="#">Link</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Link</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                            <a class="nav-link" href="{{route('logout')}}">Выход</a>
                         </li>
                     </ul>
                     @endif
