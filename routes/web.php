@@ -28,3 +28,16 @@ Route::get('/signin', '\\' . \App\Http\Controllers\AuthController::class . '@get
 Route::post('/signin', '\\' . \App\Http\Controllers\AuthController::class . '@postSignIn')->name('signin.post')->middleware('guest');
 
 Route::get('/logout',  '\\' . \App\Http\Controllers\AuthController::class . '@logout')->name('logout')->middleware('auth');
+
+//-------------//\
+
+Route::get('/startpage', function(){
+    return view('startpage');
+})->name('startpage')->middleware('auth');
+
+
+//search
+
+Route::get('/search', '\\' . \App\Http\Controllers\SearchController::class . '@getResults')->name('search.results')->middleware('auth');;
+
+//

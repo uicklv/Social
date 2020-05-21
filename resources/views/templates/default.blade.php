@@ -8,6 +8,7 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link href="/fontawesome.css" rel="stylesheet">
     @stack('css')
     <title>@yield('title')</title>
 </head>
@@ -29,7 +30,21 @@
                         </li>
                     </ul>
                 </div>
+                @else
+                <form class="form-inline" method="GET" action="{{route('search.results')}}">
+                    <input class="form-control mr-sm-2" name="query" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{\Illuminate\Support\Facades\Auth::user()->getNameorUsername()}}
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="{{route('logout')}}">Выход</a>
+                    </div>
+                </div>
                 @endif
+
         </div>
     </nav>
         <div class="container">
@@ -48,9 +63,6 @@
                     <ul class="nav flex-column mt-4">
                         <li class="nav-item">
                             <a class="nav-link" href="#">Link</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{route('logout')}}">Выход</a>
                         </li>
                     </ul>
                     @endif

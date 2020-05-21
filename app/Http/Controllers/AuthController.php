@@ -51,7 +51,7 @@ class AuthController extends Controller
         }
 
         $user = Auth::user();
-        return redirect()->route('home')->with('info', 'Вы успешно вошли как ' . $user->username);
+        return redirect()->route('startpage')->with('info', 'Вы успешно вошли как ' . $user->username);
 
     }
 
