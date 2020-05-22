@@ -13,9 +13,9 @@
                         <div class="col-lg-9">
                             @foreach($users as $user)
                                 <div class="media">
-                                    <a href="#"><img src="/" class="mr-3" alt=""></a>
+                                    <a href="{{route('profile.getprofile', ['user' => $user->id])}}"><img src="{{ $user->getAvatarUrl()  }}" class="mr-3" alt=""></a>
                                     <div class="media-body">
-                                        <h5 class="mt-0"><a href="#">{{$user->getNameorUsername()}}</a></h5>
+                                        <h5 class="mt-0"><a href="{{route('profile.getprofile', ['user' => $user->id])}}">{{$user->getNameorUsername()}}</a></h5>
                                         @if($user->location)
                                             <p>{{$user->location}}</p>
                                         @endif

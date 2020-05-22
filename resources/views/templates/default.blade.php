@@ -62,7 +62,13 @@
                     @if(\Illuminate\Support\Facades\Auth::check())
                     <ul class="nav flex-column mt-4">
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Link</a>
+                            <a class="nav-link" href="{{route('profile.getprofile', ['user' => \Illuminate\Support\Facades\Auth::user()->id])}}">Мой профиль</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{route('friends.index')}}">Мои друзья</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{route('profile.edit')}}">Редактирование профиля</a>
                         </li>
                     </ul>
                     @endif

@@ -38,6 +38,14 @@ Route::get('/startpage', function(){
 
 //search
 
-Route::get('/search', '\\' . \App\Http\Controllers\SearchController::class . '@getResults')->name('search.results')->middleware('auth');;
+Route::get('/search', '\\' . \App\Http\Controllers\SearchController::class . '@getResults')->name('search.results')->middleware('auth');
 
 //
+
+Route::get('/user/{user}', '\\' . \App\Http\Controllers\ProfileController::class . '@getProfile')->name('profile.getprofile')->middleware('auth');
+
+Route::get('/profile/edit', '\\' . \App\Http\Controllers\ProfileController::class . '@edit')->name('profile.edit')->middleware('auth');
+Route::patch('/profile/{user}', '\\' . \App\Http\Controllers\ProfileController::class . '@update')->name('profile.update')->middleware('auth');
+
+
+Route::get('/friends', '\\' . \App\Http\Controllers\FriendController::class . '@index')->name('friends.index')->middleware('auth');
