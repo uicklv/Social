@@ -40,18 +40,23 @@ class AuthController extends Controller
 
     public function postSignIn(Request $request)
     {
-        $this->validate($request, [
-            'email' => 'required|max:255',
-            'password' => 'required|min:8',
-        ] );
-
-        if (!Auth::attempt($request->only(['email', 'password']), $request->has('remember')))
-        {
-            return redirect()->back()->with('info', 'Неверный логин или пароль.');
+        if (request()->user()) {
+            return response()->json([], 403);
         }
 
-        $user = Auth::user();
-        return redirect()->route('startpage')->with('info', 'Вы успешно вошли как ' . $user->username);
+        $email = request()->get('email', null);
+        $password = request()->get('password', null);
+        $remember = request()->get('remember', 0);
+
+        //return response()->json([$email, $pas], 401);
+
+        if (Auth::attempt(['email' => $email, 'password' => $password], $remember)) {
+            $user = Auth::user();
+            $user->createToken('token-name');
+            return response()->json([], 200);
+        }
+
+        return response()->json([], 401);
 
     }
 

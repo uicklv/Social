@@ -3,7 +3,6 @@
 @section('content')
     <div class="row">
         <div class="col-lg-6">
-            <h3>Регистрация</h3>
             <form method="POST" action="{{route('signup.handle')}}" novalidate>
                 @csrf
                 <div class="form-group">
@@ -50,7 +49,7 @@
                         </span>
                     @endif
                 </div>
-                <button type="submit" class="btn btn-primary">Зарегестрироваться</button>
+                <button type="submit" class="btn btn-primary">Sign up</button>
             </form>
         </div>
     </div>
