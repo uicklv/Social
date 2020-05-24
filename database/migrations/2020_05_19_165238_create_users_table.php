@@ -21,8 +21,10 @@ class CreateUsersTable extends Migration
             $table->string('first_name', 255)->nullable();
             $table->string('last_name', 255)->nullable();
             $table->string('location', 255)->nullable();
-            $table->string('remember_name', 255)->nullable();
+            $table->timestamp('birthday', 0)->nullable();
+            $table->mediumText('about_yourself')->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
 
             $table->primary('id');

@@ -30,9 +30,7 @@ Route::get('/logout',  '\\' . \App\Http\Controllers\AuthController::class . '@lo
 
 //-------------//\
 
-Route::get('/startpage', function(){
-    return view('startpage');
-})->name('startpage')->middleware('auth');
+Route::get('/startpage', '\\' . \App\Http\Controllers\WallController::class . '@index')->name('startpage')->middleware('auth');
 
 
 //search
