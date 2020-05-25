@@ -166,19 +166,17 @@
                             <h3 class="panel-title">My Friends</h3>
                         </div>
                         <div class="panel-body">
-                            <ul>
-                                <li><a href="profile.html" class="thumbnail"><img src="img/user.png" alt=""></a></li>
-                                <li><a href="profile.html" class="thumbnail"><img src="img/user.png" alt=""></a></li>
-                                <li><a href="profile.html" class="thumbnail"><img src="img/user.png" alt=""></a></li>
-                                <li><a href="profile.html" class="thumbnail"><img src="img/user.png" alt=""></a></li>
-                                <li><a href="profile.html" class="thumbnail"><img src="img/user.png" alt=""></a></li>
-                                <li><a href="profile.html" class="thumbnail"><img src="img/user.png" alt=""></a></li>
-                                <li><a href="profile.html" class="thumbnail"><img src="img/user.png" alt=""></a></li>
-                                <li><a href="profile.html" class="thumbnail"><img src="img/user.png" alt=""></a></li>
-                                <li><a href="profile.html" class="thumbnail"><img src="img/user.png" alt=""></a></li>
-                            </ul>
-                            <div class="clearfix"></div>
-                            <a class="btn btn-primary" href="#">View All Friends</a>
+                            @if(!$friends->count())
+                                Список пуст :(
+                            @else
+                                <ul>
+                                    @foreach($friends as $friend)
+                                        <li><a href="{{route('profile.getprofile', ['user' => $friend->id])}}" class="thumbnail"><img src="img/user.png" alt="" title="{{$friend->username}}"></a></li>
+                                    @endforeach
+                                </ul>
+                                <div class="clearfix"></div>
+                                <a class="btn btn-primary" href="#">View All Friends</a>
+                            @endif
                         </div>
                     </div>
                     <div class="panel panel-default groups">

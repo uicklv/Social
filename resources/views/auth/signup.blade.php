@@ -3,54 +3,74 @@
 @section('content')
     <div class="row">
         <div class="col-lg-6">
-            <form method="POST" action="{{route('signup.handle')}}" novalidate>
+            <form id="logform" action="" >
                 @csrf
-                <div class="form-group">
+                <div class="form-group" id="div_email">
                     <label for="email">Email</label>
-                    <input type="email" name="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" id="email" value="{{old('email')}}">
-                    @if($errors->has('email'))
-                        <span class="help-block text-danger" role="alert">
-                            @foreach($errors->get('email') as $error)
-                                <p>{{$error}}</p>
-                            @endforeach
-                        </span>
-                    @endif
+                    <input type="email" name="email" class="form-control" id="email" value="{{old('email')}}">
+                        <span class="help-block text-danger" id="email_error" role="alert" style="display: none;"></span>
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="div_username">
                     <label for="username">Login</label>
-                    <input type="text" name="username" class="form-control {{ $errors->has('username') ? 'is-invalid' : '' }}" id="username" value="{{old('username')}}">
-                    @if($errors->has('username'))
-                        <span class="help-block text-danger" role="alert">
-                            @foreach($errors->get('username') as $error)
-                                <p>{{$error}}</p>
-                            @endforeach
-                        </span>
-                    @endif
+                    <input type="text" name="username" class="form-control" id="username" value="{{old('username')}}">
+                        <span class="help-block text-danger" id="username_error" role="alert" style="display: none;"></span>
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="div_password">
                     <label for="password">Password</label>
-                    <input type="password"  name="password" class="form-control {{ $errors->has('password') ? 'is-invalid' : '' }}" id="password">
-                    @if($errors->has('password'))
-                        <span class="help-block text-danger" role="alert">
-                            @foreach($errors->get('password') as $error)
-                                <p>{{$error}}</p>
-                            @endforeach
-                        </span>
-                    @endif
+                    <input type="password"  name="password" class="form-control" id="password">
+                    <span class="help-block text-danger" id="password_error" role="alert" style="display: none;"></span>
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="div_password_confirmation">
                     <label for="password_confirmation">Password Confirm</label>
-                    <input type="password"  name="password_confirmation" class="form-control {{ $errors->has('password_confirmation') ? 'is-invalid' : '' }}" id="password_confirmation">
-                    @if($errors->has('password_confirmation'))
-                        <span class="help-block text-danger" role="alert">
-                            @foreach($errors->get('password_confirmation') as $error)
-                                <p>{{$error}}</p>
-                            @endforeach
-                        </span>
-                    @endif
+                    <input type="password"  name="password_confirmation" class="form-control" id="password_confirmation">
+                    <span class="help-block text-danger" id="password_confirmation_error" role="alert" style="display: none;"></span>
                 </div>
-                <button type="submit" class="btn btn-primary">Sign up</button>
+                <button type="submit" class="btn btn-primary" id="submit_b" >Sign up</button>
             </form>
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script type="text/javascript">
+        jQuery(document).ready(function() {
+
+            var handleSignInFormSubmit = function() {
+                $('#submit_b').click(function(e) {
+                    e.preventDefault();
+                    var form = $(this).closest('form').serialize();
+
+
+                    $.ajax({
+                        method: 'POST',
+                        url: '{{route('signup.handle')}}',
+                        data: form,
+                        error: function(xhr) {
+                            var response = jQuery.parseJSON(xhr.responseText);
+                            console.log(response.errors);
+                            if(response.errors){
+                                document.getElementById('div_email').classList.add('has-error');
+                                $('#email_error').css('display', 'block');
+                                $('#email_error').append(response.errors.email);
+                                for(var k in response.errors)
+                                {
+                                    $('#' + k + '_error').html('');
+                                    document.getElementById('div_' + k).classList.add('has-error');
+                                    $('#' + k + '_error').css('display', 'block');
+                                    for(var i = 0; i < response.errors[k].length; i++) {
+                                        $('#' + k + '_error').append(response.errors[k][i]);
+                                    }
+                                }
+                            }
+                        },
+                        success: function(response, status, xhr, $form) {
+                           window.location.href = "{{route('startpage')}}";
+                        }
+                    });
+                });
+            }
+
+            handleSignInFormSubmit();
+        });
+    </script>
+@endpush

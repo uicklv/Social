@@ -30,7 +30,14 @@ class AuthController extends Controller
         $user->password = bcrypt($request->input('password'));
         $user->save();
 
-        return redirect()->route('home')->with('info', 'Вы успешно зарегестрировались! Выполните вход.');
+        if (Auth::attempt(['email' => $user->email, 'password' => $request->input('password')])) {
+            $user = Auth::user();
+            $user->createToken('token-name');
+            return response()->json([], 200);
+        }
+
+        return response()->json([], 401);
+
     }
 
     public function getSignIn()
@@ -62,7 +69,8 @@ class AuthController extends Controller
 
     public function logout()
     {
+        Auth::user()->tokens()->delete();
         Auth::logout();
-        return  redirect()->route('signin');
+        return  redirect()->route('signin.get');
     }
 }

@@ -4,11 +4,15 @@
 namespace App\Http\Controllers;
 
 
+use App\User;
+use Illuminate\Support\Facades\Auth;
+
 class WallController extends Controller
 {
     public function index()
     {
-        return view('startpage');
+        $friends = Auth::user()->allFriends();
+        return view('startpage', ['friends' => $friends]);
     }
 
 }
