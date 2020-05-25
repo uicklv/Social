@@ -49,9 +49,6 @@
                             var response = jQuery.parseJSON(xhr.responseText);
                             console.log(response.errors);
                             if(response.errors){
-                                document.getElementById('div_email').classList.add('has-error');
-                                $('#email_error').css('display', 'block');
-                                $('#email_error').append(response.errors.email);
                                 for(var k in response.errors)
                                 {
                                     $('#' + k + '_error').html('');

@@ -15,7 +15,8 @@ class ProfileController extends Controller
         {
             abort(404);
         }
-        return view('user.profile', ['user' => $user]);
+        $posts = $user->posts()->latest()->get();
+        return view('user.profile', ['user' => $user, 'posts' => $posts]);
     }
 
     public function edit()

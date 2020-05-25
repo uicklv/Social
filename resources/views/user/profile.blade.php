@@ -63,11 +63,15 @@
                                     <h3 class="panel-title">Profile Wall</h3>
                                 </div>
                                 <div class="panel-body">
-                                    <form>
+                                    <form action="" id="postform">
+                                        @csrf
                                         <div class="form-group">
-                                            <textarea class="form-control" placeholder="Write on the wall"></textarea>
+                                            <textarea class="form-control" placeholder="Write on the wall" name="caption" id="caption"></textarea>
+                                            <div id="div_caption">
+                                                <span class="help-block text-danger" id="caption_error" role="alert" style="display: none;"></span>
+                                            </div>
                                         </div>
-                                        <button type="submit" class="btn btn-default">Submit</button>
+                                        <button id="button_submit" type="submit" class="btn btn-default">Submit</button>
                                         <div class="pull-right">
                                             <div class="btn-toolbar">
                                                 <button type="button" class="btn btn-default"><i class="fa fa-pencil"></i>Text</button>
@@ -78,6 +82,52 @@
                                     </form>
                                 </div>
                             </div>
+                                <div id="div_success" class="alert alert-success alert-dismissible" role="alert" style="display:none">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                    Post added, refresh page
+                                </div>
+                            @foreach($posts as $post)
+                                <div class="panel panel-default post">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <a href="profile.html" class="post-avatar thumbnail"><img src="/img/user.png" alt=""><div class="text-center">{{$user->getNameorUsername()}}</div></a>
+                                            <div class="likes text-center">7 Likes</div>
+                                        </div>
+                                        <div class="col-sm-10">
+                                            <div class="bubble">
+                                                <div class="pointer">
+                                                    <p>{{$post->caption}}</p>
+                                                </div>
+                                                <div class="pointer-border"></div>
+                                            </div>
+                                            <p class="text-right">{{\Illuminate\Support\Carbon::parse($post->created_at)->format('d F Y / H:i ')}}</p>
+                                            <p class="post-actions"><a href="#">Comment</a> - <a href="#">Like</a> - <a href="#">Follow</a> - <a href="#">Share</a></p>
+                                            <div class="comment-form">
+                                                <form class="form-inline">
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control" placeholder="enter comment">
+                                                    </div>
+                                                    <button type="submit" class="btn btn-default">Add</button>
+                                                </form>
+                                            </div>
+                                            <div class="clearfix"></div>
+
+                                            <div class="comments">
+                                                <div class="comment">
+                                                    <a href="#" class="comment-avatar pull-left"><img src="/img/user.png" alt=""></a>
+                                                    <div class="comment-text">
+                                                        <p>I am just going to paste in a paragraph, then we will add another clearfix.</p>
+                                                    </div>
+                                                </div>
+                                                <div class="clearfix">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -85,7 +135,11 @@
             <div class="col-md-4">
                 <div class="panel panel-default friends">
                     <div class="panel-heading">
-                        <h3 class="panel-title">My Friends</h3>
+                        @if(\Illuminate\Support\Facades\Auth::user()->id == $user->id)
+                            <h3 class="panel-title">My Friends</h3>
+                        @else
+                            <h3 class="panel-title">Friends</h3>
+                        @endif
                     </div>
                     <div class="panel-body">
                         @if(!$user->allFriends()->count())
@@ -131,4 +185,35 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script type="text/javascript">
+            $(document).ready(function() {
+
+                var handleFormSubmit = function() {
+                    $('#button_submit').click(function(e) {
+                        e.preventDefault();
+                        var form = $(this).closest('#postform').serialize();
+                        $.ajax({
+                            method: 'POST',
+                            url: '{{route('post.store')}}',
+                            data: form,
+                            error: function(xhr) {
+                                var response = jQuery.parseJSON(xhr.responseText);
+                                if(response.errors.caption){
+                                    document.getElementById('div_caption').classList.add('has-error');
+                                    $('#caption_error').css('display', 'block');
+                                    $('#caption_error').append(response.errors.caption);
+                                }
+                            },
+                            success: function(response, status, xhr, $form) {
+                                $('#div_success').css('display', 'block');
+                            }
+                        });
+                    });
+                }
+                handleFormSubmit();
+            });
+    </script>
+@endpush
 

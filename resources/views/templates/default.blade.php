@@ -20,7 +20,7 @@
 
     <header>
         <div class="container">
-            <img src="img/logo.png" class="logo" alt="">
+            <img src="/img/logo.png" class="logo" alt="">
         </div>
     </header>
 
@@ -37,12 +37,12 @@
             <div id="navbar" class="collapse navbar-collapse">
                 @if(\Illuminate\Support\Facades\Auth::check())
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="index.html">Home</a></li>
+                    <li @if(\Illuminate\Support\Facades\Route::currentRouteName() == 'startpage') class="active" @endif><a href="{{route('startpage')}}">Home</a></li>
                     <li><a href="members.html">Members</a></li>
                     <li><a href="contact.html">Contact</a></li>
                     <li><a href="groups.html">Groups</a></li>
                     <li><a href="photos.html">Photos</a></li>
-                    <li><a href="profile.html">Profile</a></li>
+                    <li @if(\Illuminate\Support\Facades\Route::currentRouteName() == 'profile.getprofile') class="active" @endif><a href="{{route('profile.getprofile', ['user' => \Illuminate\Support\Facades\Auth::user()])}}">Profile</a></li>
                 </ul>
                 @else
                     <ul class="nav navbar-nav">
