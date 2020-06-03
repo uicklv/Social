@@ -58,8 +58,6 @@ class AuthController extends Controller
         //return response()->json([$email, $pas], 401);
 
         if (Auth::attempt(['email' => $email, 'password' => $password], $remember)) {
-            $user = Auth::user();
-            $user->createToken('token-name');
             return response()->json([], 200);
         }
 
@@ -69,7 +67,6 @@ class AuthController extends Controller
 
     public function logout()
     {
-        Auth::user()->tokens()->delete();
         Auth::logout();
         return  redirect()->route('signin.get');
     }

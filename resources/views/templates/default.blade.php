@@ -43,6 +43,7 @@
                     <li><a href="groups.html">Groups</a></li>
                     <li><a href="photos.html">Photos</a></li>
                     <li @if(\Illuminate\Support\Facades\Route::currentRouteName() == 'profile.getprofile') class="active" @endif><a href="{{route('profile.getprofile', ['user' => \Illuminate\Support\Facades\Auth::user()])}}">Profile</a></li>
+                    <li><a href="{{route('logout')}}">Logout</a></li>
                 </ul>
                 @else
                     <ul class="nav navbar-nav">
