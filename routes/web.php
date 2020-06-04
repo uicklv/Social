@@ -74,3 +74,7 @@ Route::get('/friends', '\\' . \App\Http\Controllers\FriendController::class . '@
 Route::post('/post', '\\' . \App\Http\Controllers\PostController::class . '@store')
     ->name('post.store')
     ->middleware('auth');
+
+Route::get('/post', '\\' . \App\Http\Controllers\WallController::class . '@getAllposts')
+    ->name('post.getall')
+    ->middleware('auth');

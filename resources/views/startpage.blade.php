@@ -9,48 +9,9 @@
                             <h3 class="panel-title">Wall</h3>
                         </div>
                     </div>
-                    @foreach($posts as $post)
-                        <div class="panel panel-default post">
-                            <div class="panel-body">
-                                <div class="row">
-                                    <div class="col-sm-2">
-                                        <a href="profile.html" class="post-avatar thumbnail"><img src="/img/user.png" alt=""><div class="text-center">{{\App\User::find($post->user_id)->getNameorUsername()}}</div></a>
-                                        <div class="likes text-center">7 Likes</div>
-                                    </div>
-                                    <div class="col-sm-10">
-                                        <div class="bubble">
-                                            <div class="pointer">
-                                                <p>{{$post->caption}}</p>
-                                            </div>
-                                            <div class="pointer-border"></div>
-                                        </div>
-                                        <p class="text-right">{{\Illuminate\Support\Carbon::parse($post->created_at)->format('d F Y / H:i ')}}</p>
-                                        <p class="post-actions"><a href="#">Comment</a> - <a href="#">Like</a> - <a href="#">Follow</a> - <a href="#">Share</a></p>
-                                        <div class="comment-form">
-                                            <form class="form-inline">
-                                                <div class="form-group">
-                                                    <input type="text" class="form-control" placeholder="enter comment">
-                                                </div>
-                                                <button type="submit" class="btn btn-default">Add</button>
-                                            </form>
-                                        </div>
-                                        <div class="clearfix"></div>
-
-                                        <div class="comments">
-                                            <div class="comment">
-                                                <a href="#" class="comment-avatar pull-left"><img src="/img/user.png" alt=""></a>
-                                                <div class="comment-text">
-                                                    <p>I am just going to paste in a paragraph, then we will add another clearfix.</p>
-                                                </div>
-                                            </div>
-                                            <div class="clearfix">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
+                    <div id="posts">
+                    {{--     ajax data     --}}
+                    </div>
                 </div>
                 <div class="col-md-4">
                     <div class="panel panel-default friends">
@@ -101,3 +62,67 @@
             </div>
         </div>
 @endsection
+
+@push('scripts')
+    <script type="text/javascript">
+        jQuery(document).ready(function() {
+
+                    $.ajax({
+                        method: 'GET',
+                        url: '{{route('post.getall')}}',
+                        error: function() {
+                        },
+                        success: function(response, status, xhr, $form) {
+                            var result = jQuery.parseJSON(response);
+                            console.log(result);
+                            var Temp = document.getElementById("posts").innerHTML;
+                            for (var k in  result)
+                            {
+                                Temp += ' <div class="panel panel-default post">\n' +
+                                    '                            <div class="panel-body">\n' +
+                                    '                                <div class="row">\n' +
+                                    '                                    <div class="col-sm-2">\n' +
+                                    '                                        <a href="profile.html" class="post-avatar thumbnail"><img src="/img/user.png" alt=""><div class="text-center">' + result[k].name + '</div></a>\n' +
+                                    '                                        <div class="likes text-center">7 Likes</div>\n' +
+                                    '                                    </div>\n' +
+                                    '                                    <div class="col-sm-10">\n' +
+                                    '                                        <div class="bubble">\n' +
+                                    '                                            <div class="pointer">\n' +
+                                    '                                                <p>' + result[k].caption + '</p>\n' +
+                                    '                                            </div>\n' +
+                                    '                                            <div class="pointer-border"></div>\n' +
+                                    '                                        </div>\n' +
+                                    '                                        <p class="text-right">' + result[k].created_at + '</p>\n' +
+                                    '                                        <p class="post-actions"><a href="#">Comment</a> - <a href="#">Like</a> - <a href="#">Follow</a> - <a href="#">Share</a></p>\n' +
+                                    '                                        <div class="comment-form">\n' +
+                                    '                                            <form class="form-inline">\n' +
+                                    '                                                <div class="form-group">\n' +
+                                    '                                                    <input type="text" class="form-control" placeholder="enter comment">\n' +
+                                    '                                                </div>\n' +
+                                    '                                                <button type="submit" class="btn btn-default">Add</button>\n' +
+                                    '                                            </form>\n' +
+                                    '                                        </div>\n' +
+                                    '                                        <div class="clearfix"></div>\n' +
+                                    '\n' +
+                                    '                                        <div class="comments">\n' +
+                                    '                                            <div class="comment">\n' +
+                                    '                                                <a href="#" class="comment-avatar pull-left"><img src="/img/user.png" alt=""></a>\n' +
+                                    '                                                <div class="comment-text">\n' +
+                                    '                                                    <p>I am just going to paste in a paragraph, then we will add another clearfix.</p>\n' +
+                                    '                                                </div>\n' +
+                                    '                                            </div>\n' +
+                                    '                                            <div class="clearfix">\n' +
+                                    '                                            </div>\n' +
+                                    '                                        </div>\n' +
+                                    '                                    </div>\n' +
+                                    '                                </div>\n' +
+                                    '                            </div>\n' +
+                                    '                        </div>';
+                                document.getElementById("posts").innerHTML = Temp;
+                            }
+                        },
+                    });
+        });
+    </script>
+
+@endpush
