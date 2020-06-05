@@ -75,50 +75,55 @@
                         success: function(response, status, xhr, $form) {
                             var result = jQuery.parseJSON(response);
                             console.log(result);
-                            var Temp = document.getElementById("posts").innerHTML;
-                            for (var k in  result)
-                            {
-                                Temp += ' <div class="panel panel-default post">\n' +
-                                    '                            <div class="panel-body">\n' +
-                                    '                                <div class="row">\n' +
-                                    '                                    <div class="col-sm-2">\n' +
-                                    '                                        <a href="profile.html" class="post-avatar thumbnail"><img src="/img/user.png" alt=""><div class="text-center">' + result[k].name + '</div></a>\n' +
-                                    '                                        <div class="likes text-center">7 Likes</div>\n' +
-                                    '                                    </div>\n' +
-                                    '                                    <div class="col-sm-10">\n' +
-                                    '                                        <div class="bubble">\n' +
-                                    '                                            <div class="pointer">\n' +
-                                    '                                                <p>' + result[k].caption + '</p>\n' +
-                                    '                                            </div>\n' +
-                                    '                                            <div class="pointer-border"></div>\n' +
-                                    '                                        </div>\n' +
-                                    '                                        <p class="text-right">' + result[k].created_at + '</p>\n' +
-                                    '                                        <p class="post-actions"><a href="#">Comment</a> - <a href="#">Like</a> - <a href="#">Follow</a> - <a href="#">Share</a></p>\n' +
-                                    '                                        <div class="comment-form">\n' +
-                                    '                                            <form class="form-inline">\n' +
-                                    '                                                <div class="form-group">\n' +
-                                    '                                                    <input type="text" class="form-control" placeholder="enter comment">\n' +
-                                    '                                                </div>\n' +
-                                    '                                                <button type="submit" class="btn btn-default">Add</button>\n' +
-                                    '                                            </form>\n' +
-                                    '                                        </div>\n' +
-                                    '                                        <div class="clearfix"></div>\n' +
-                                    '\n' +
-                                    '                                        <div class="comments">\n' +
-                                    '                                            <div class="comment">\n' +
-                                    '                                                <a href="#" class="comment-avatar pull-left"><img src="/img/user.png" alt=""></a>\n' +
-                                    '                                                <div class="comment-text">\n' +
-                                    '                                                    <p>I am just going to paste in a paragraph, then we will add another clearfix.</p>\n' +
-                                    '                                                </div>\n' +
-                                    '                                            </div>\n' +
-                                    '                                            <div class="clearfix">\n' +
-                                    '                                            </div>\n' +
-                                    '                                        </div>\n' +
-                                    '                                    </div>\n' +
-                                    '                                </div>\n' +
-                                    '                            </div>\n' +
-                                    '                        </div>';
-                                document.getElementById("posts").innerHTML = Temp;
+                            if(result) {
+                                var Temp = document.getElementById("posts").innerHTML;
+                                for (var k in result) {
+                                    Temp += ' <div class="panel panel-default post">\n' +
+                                        '                            <div class="panel-body">\n' +
+                                        '                                <div class="row">\n' +
+                                        '                                    <div class="col-sm-2">\n' +
+                                        '                                        <a href="profile.html" class="post-avatar thumbnail"><img src="/img/user.png" alt=""><div class="text-center">' + result[k].name + '</div></a>\n' +
+                                        '                                        <div class="likes text-center">7 Likes</div>\n' +
+                                        '                                    </div>\n' +
+                                        '                                    <div class="col-sm-10">\n' +
+                                        '                                        <div class="bubble">\n' +
+                                        '                                            <div class="pointer">\n' +
+                                        '                                                <p>' + result[k].caption + '</p>\n' +
+                                        '                                            </div>\n' +
+                                        '                                            <div class="pointer-border"></div>\n' +
+                                        '                                        </div>\n' +
+                                        '                                        <p class="text-right">' + result[k].created_at + '</p>\n' +
+                                        '                                        <p class="post-actions"><a href="#">Comment</a> - <a href="#">Like</a> - <a href="#">Follow</a> - <a href="#">Share</a></p>\n' +
+                                        '                                        <div class="comment-form">\n' +
+                                        '                                            <form class="form-inline">\n' +
+                                        '                                                <div class="form-group">\n' +
+                                        '                                                    <input type="text" class="form-control" placeholder="enter comment">\n' +
+                                        '                                                </div>\n' +
+                                        '                                                <button type="submit" class="btn btn-default">Add</button>\n' +
+                                        '                                            </form>\n' +
+                                        '                                        </div>\n' +
+                                        '                                        <div class="clearfix"></div>\n' +
+                                        '\n' +
+                                        '                                        <div class="comments">\n';
+                                        for(var key in result[k].comments)
+                                        {
+                                            Temp +=                                     '<div class="comment">\n' +
+                                            '                                                <a href="/user/' + result[k].comments[key].user_id +  '" class="comment-avatar pull-left"><img src="/img/user.png" alt="" title="' + result[k].comments[key].name + '"></a>\n' +
+                                            '                                                <div class="comment-text">\n' +
+                                            '                                                    <p>' + result[k].comments[key].caption + '</p>\n' +
+                                            '                                                </div>\n'+
+                                            '                                            </div>\n'+
+                                            '<p>' + result[k].comments[key].created_at + '</p>';
+                                        }
+                                    Temp +=    '                                            <div class="clearfix">\n' +
+                                        '                                            </div>\n' +
+                                        '                                        </div>\n' +
+                                        '                                    </div>\n' +
+                                        '                                </div>\n' +
+                                        '                            </div>\n' +
+                                        '                        </div>';
+                                    document.getElementById("posts").innerHTML = Temp;
+                                }
                             }
                         },
                     });
