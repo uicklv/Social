@@ -78,3 +78,8 @@ Route::post('/post', '\\' . \App\Http\Controllers\PostController::class . '@stor
 Route::get('/post', '\\' . \App\Http\Controllers\WallController::class . '@getAllposts')
     ->name('post.getall')
     ->middleware('auth');
+
+
+Route::post('/comment', '\\' . \App\Http\Controllers\WallController::class . '@addComment')
+    ->name('comment.post')
+    ->middleware('auth');
