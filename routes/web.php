@@ -83,3 +83,11 @@ Route::get('/post', '\\' . \App\Http\Controllers\WallController::class . '@getAl
 Route::post('/comment', '\\' . \App\Http\Controllers\WallController::class . '@addComment')
     ->name('comment.post')
     ->middleware('auth');
+
+Route::post('/like', '\\' . \App\Http\Controllers\WallController::class . '@like')
+    ->name('like.post')
+    ->middleware('auth');
+
+Route::get('/like', '\\' . \App\Http\Controllers\WallController::class . '@countLike')
+    ->name('like.get')
+    ->middleware('auth');

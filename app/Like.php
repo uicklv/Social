@@ -12,4 +12,9 @@ class Like extends Model
     public $incrementing = false;
 
     protected $keyType = 'string';
+
+    public function post()
+    {
+        return $this->belongsTo(Post::class);
+    }
 }

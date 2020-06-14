@@ -67,6 +67,8 @@
 @push('scripts')
     <script type="text/javascript">
         jQuery(document).ready(function() {
+
+
             //global function for get button id
                    window.reply_click =  function(clicked_id)
                     {
@@ -111,7 +113,7 @@
                                             '                                <div class="row">\n' +
                                             '                                    <div class="col-sm-2">\n' +
                                             '                                        <a href="profile.html" class="post-avatar thumbnail"><img src="/img/user.png" alt=""><div class="text-center">' + result[k].name + '</div></a>\n' +
-                                            '                                        <div class="likes text-center">7 Likes</div>\n' +
+                                            '                                        <div class="likes text-center" id="like_div_' + result[k].id + '" ></div>\n' +
                                             '                                    </div>\n' +
                                             '                                    <div class="col-sm-10">\n' +
                                             '                                        <div class="bubble">\n' +
@@ -121,7 +123,7 @@
                                             '                                            <div class="pointer-border"></div>\n' +
                                             '                                        </div>\n' +
                                             '                                        <p class="text-right">' + result[k].created_at + '</p>\n' +
-                                            '                                        <p class="post-actions"><a href="#">Comment</a> - <a href="#">Like</a> - <a href="#">Follow</a> - <a href="#">Share</a></p>\n' +
+                                            '                                        <form id="form_' + result[k].id + '">@csrf<p class="post-actions"> - <a class="like" id="like_' + result[k].id + '" href="#">Like</a> - </p></form>\n' +
                                             '                                        <div class="comment-form">\n' +
                                             '                                            <form class="form-inline" id="form_' + result[k].id + '">\n' +
                                             '                                                <div class="alert alert-danger" id="error_' + result[k].id + '" role="alert" style="display:none"></div>\n' +
@@ -134,7 +136,7 @@
                                             '                                        <div class="clearfix"></div>\n' +
                                             '\n' +
                                             '                                        <div class="comments">\n';
-                                        for (var key in result[k].comments) {
+                                                                                    for (var key in result[k].comments) {
                                                                                     Temp += '<div class="comment">\n' +
                                                 '                                                <a href="/user/' + result[k].comments[key].user_id + '" class="comment-avatar pull-left"><img src="/img/user.png" alt="" title="' + result[k].comments[key].name + '"></a>\n' +
                                                 '                                                <div class="comment-text">\n' +
@@ -142,8 +144,11 @@
                                                 '                                                </div>\n' +
                                                 '                                            </div>\n' +
                                                                                             '<p>' + result[k].comments[key].created_at + '</p>';
-                                        }
-                                        Temp += '                                            <div class="clearfix">\n' +
+                                                                                    }
+                                                                                    if(result[k].comments){
+                                                                                        Temp += '<p><a id="shaw_all" href="#">Все комментарии</a></p>';
+                                                                                    }
+                                             Temp += '                                         <div class="clearfix">\n' +
                                             '                                            </div>\n' +
                                             '                                        </div>\n' +
                                             '                                    </div>\n' +
@@ -152,12 +157,60 @@
                                             '                        </div>';
                                         document.getElementById("posts").innerHTML = Temp;
                                     }
+
+                                    function getLikes() {
+                                        $.ajax({
+                                            method: 'GET',
+                                            url: '{{route('like.get')}}',
+                                            error: function (xhr) {
+                                            },
+                                            success: function (response, status, xhr) {
+
+                                                var result = jQuery.parseJSON(response);
+
+                                                for (var k in result) {
+
+                                                    $('#like_div_' + result[k].post_id).html(result[k].likes + ' Likes');
+                                                }
+
+                                            },
+                                        });
+                                    }
+                                    getLikes();
+
+                                    $(".like").on('click', function (e) {
+                                        e.preventDefault();
+                                        var post_id =  $(this).attr('id').slice(5);
+                                        token = $('#form_' + post_id).find( $('input[name="_token"]')).val();
+                                        console.log(token);
+                                        var user_id = '{{\Illuminate\Support\Facades\Auth::user()->id}}';
+                                        $.ajax({
+                                            beforeSend: function(xhr) {
+                                                xhr.setRequestHeader('X-CSRF-Token', token);
+                                            },
+                                            method: 'POST',
+                                            url: '{{route('like.post')}}',
+                                            data: {'user_id':  user_id, 'post_id': post_id},
+                                            error: function (xhr) {
+
+                                            },
+                                            success: function (response, status, xhr) {
+                                                getLikes();
+                                            },
+                                        });
+                                    });
+
+
+
+
+
                                 }
                             },
                         });
                     }
 
                     getData();
+
 
         });
     </script>
