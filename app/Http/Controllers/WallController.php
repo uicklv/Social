@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Comment;
 use App\Like;
+use App\Post;
 use App\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -38,7 +39,7 @@ class WallController extends Controller
             $new_value = $value->toArray();
             //refresh keys in collection
             $comments = new Collection();
-            foreach($value->comments()->get()->sortBy('created_at') as $v)
+            foreach($value->comments()->limit(3)->get()->sortBy('created_at') as $v)
             {
                 $comments[] = $v;
             }
@@ -118,6 +119,31 @@ class WallController extends Controller
             $like->delete();
         }
         return response([], 200);
+    }
+
+
+    public function getAllComment()
+    {
+        request()->validate([
+            'post_id' => 'required|uuid',
+        ]);
+
+        $postId = request()->get('post_id');
+        $countComment = Post::find($postId)->comments()->count();
+        $comments = Post::find($postId)->comments()->limit($countComment)->offset(3)->get()->sortBy('created_at');
+
+        $allComments = [];
+        foreach ($comments as $k => $comment)
+        {
+            $allComments['comments'][$k]['user_id'] = $comment['user_id'];
+            $allComments['comments'][$k]['name'] = User::find($comment['user_id'])->getNameorUsername();
+            $allComments['comments'][$k]['caption'] = $comment['caption'];
+            $allComments['comments'][$k]['created_at'] =  \Illuminate\Support\Carbon::parse($comment['created_at'])->format('d F Y / H:i ');
+        }
+
+        $allComments['post_id'] = $postId;
+
+        return  response(json_encode($allComments), 200);
     }
 
 }

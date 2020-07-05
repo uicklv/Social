@@ -151,8 +151,11 @@ footer{
 .members img{
 	margin-bottom: 5px;
 }
+#buttonFriend {
+    font-size: 14px;
+    color: #00AAAA;
+}
 
-div.comments div.comment:nth-child(n+4){display:none;}
 
 @media(min-width: 991px){
   .members p{

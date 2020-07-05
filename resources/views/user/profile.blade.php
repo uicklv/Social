@@ -42,7 +42,26 @@
         <div class="row">
             <div class="col-md-8">
                 <div class="profile">
-                    <h1 class="page-header">{{$user->getNameorUsername()}}</h1>
+                    <h1 class="page-header">{{$user->getNameorUsername()}}
+                        <div id="buttonFriend">
+                            @php
+                                $checkFriend = \App\User::checkFriend($user);
+
+                            @endphp
+                            @if($checkFriend['isFriend'])
+                                <a id="deleteFriend" href="#" class="btn btn-danger">Удалить из друзей</a>
+                            @elseif($user->id == \Illuminate\Support\Facades\Auth::user()->id)
+                                <a href="#" class="btn btn-default">Настройки профиля</a>
+                            @elseif(!$checkFriend['isFriend'] && $checkFriend['isRequest']->isEmpty())
+                                <a id="addFriend"  class="btn btn-success">Добавить в друзья</a>
+                            @elseif(\Illuminate\Support\Facades\Auth::user()->friendRequests()->contains('id', $user->id))
+                                <a id="acceptFriend"  class="btn btn-success">Принять заявку</a>
+                            @elseif(!$checkFriend['isRequest']->isEmpty())
+                                Заявка в обработке...
+                            @endif
+                        </div>
+                        @csrf
+                    </h1>
                     <div class="row">
                         <div class="col-md-4">
                             <img src="/img/user.png" class="img-thumbnail" alt="">
@@ -212,6 +231,73 @@
                         });
                     });
                 }
+
+                $('#addFriend').click(function(e) {
+                    let token = $('input[name="_token"]').val();
+                    e.preventDefault();
+                    $.ajax({
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader('X-CSRF-Token', token);
+                        },
+                        method: 'POST',
+                        url: '{{route('addfriend.post')}}',
+                        data: {
+                            user: '{{\Illuminate\Support\Facades\Auth::user()->id}}',
+                            friend: '{{$user->id}}',
+                        },
+                        error: function(xhr) {
+
+                        },
+                        success: function(response, status, xhr, $form) {
+                            $('#buttonFriend').html('Заявка отправлена');
+                        }
+                    });
+                });
+                $('#acceptFriend').click(function(e) {
+                    let token = $('input[name="_token"]').val();
+                    e.preventDefault();
+                    $.ajax({
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader('X-CSRF-Token', token);
+                        },
+                        method: 'POST',
+                        url: '{{route('accept.post')}}',
+                        data: {
+                            user: '{{\Illuminate\Support\Facades\Auth::user()->id}}',
+                            friend: '{{$user->id}}',
+                        },
+                        error: function(xhr) {
+
+                        },
+                        success: function(response, status, xhr, $form) {
+                            $('#buttonFriend').html('Заявка принята');
+                        }
+                    });
+                });
+
+                $('#deleteFriend').click(function(e) {
+                    let token = $('input[name="_token"]').val();
+                    e.preventDefault();
+                    $.ajax({
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader('X-CSRF-Token', token);
+                        },
+                        method: 'POST',
+                        url: '{{route('deletefriend.post')}}',
+                        data: {
+                            user: '{{\Illuminate\Support\Facades\Auth::user()->id}}',
+                            friend: '{{$user->id}}',
+                        },
+                        error: function(xhr) {
+
+                        },
+                        success: function(response, status, xhr, $form) {
+                            $('#buttonFriend').html('Удаление выполнено');
+                        }
+                    });
+                });
+
+
                 handleFormSubmit();
             });
     </script>

@@ -91,3 +91,19 @@ Route::post('/like', '\\' . \App\Http\Controllers\WallController::class . '@like
 Route::get('/like', '\\' . \App\Http\Controllers\WallController::class . '@countLike')
     ->name('like.get')
     ->middleware('auth');
+
+Route::get('/comment', '\\' . \App\Http\Controllers\WallController::class . '@getAllComment')
+    ->name('comment.get')
+    ->middleware('auth');
+
+Route::post('/friend/add', '\\' . \App\Http\Controllers\FriendController::class . '@addFriend')
+    ->name('addfriend.post')
+    ->middleware('auth');
+
+Route::post('/friend/delete', '\\' . \App\Http\Controllers\FriendController::class . '@deleteFriend')
+    ->name('deletefriend.post')
+    ->middleware('auth');
+
+Route::post('/friend/accept', '\\' . \App\Http\Controllers\FriendController::class . '@acceptRequest')
+    ->name('accept.post')
+    ->middleware('auth');

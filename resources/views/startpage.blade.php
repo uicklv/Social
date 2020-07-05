@@ -13,6 +13,9 @@
                     {{--     ajax data     --}}
                     </div>
                 </div>
+                <div id="test">
+
+                </div>
                 <div class="col-md-4">
                     <div class="panel panel-default friends">
                         <div class="panel-heading">
@@ -28,7 +31,7 @@
                                     @endforeach
                                 </ul>
                                 <div class="clearfix"></div>
-                                <a class="btn btn-primary" href="#">View All Friends</a>
+                                <a class="btn btn-primary" href="{{route('friends.index')}}">View All Friends</a>
                             @endif
                         </div>
                     </div>
@@ -56,7 +59,6 @@
                             </div>
                             <div class="clearfix"></div>
                             <a href="#" class="btn btn-primary">View All Groups</a>
-                            <button type="submit" class="new_submit" >post</button>
                         </div>
                     </div>
                 </div>
@@ -68,11 +70,10 @@
     <script type="text/javascript">
         jQuery(document).ready(function() {
 
-
             //global function for get button id
                    window.reply_click =  function(clicked_id)
                     {
-                        var data = $('#form_' + clicked_id).serialize();
+                        var data = $('#form_comment_' + clicked_id).serialize();
                         var post_id =  clicked_id;
                         var user_id = '{{\Illuminate\Support\Facades\Auth::user()->id}}';
                         $.ajax({
@@ -125,7 +126,7 @@
                                             '                                        <p class="text-right">' + result[k].created_at + '</p>\n' +
                                             '                                        <form id="form_' + result[k].id + '">@csrf<p class="post-actions"> - <a class="like" id="like_' + result[k].id + '" href="#">Like</a> - </p></form>\n' +
                                             '                                        <div class="comment-form">\n' +
-                                            '                                            <form class="form-inline" id="form_' + result[k].id + '">\n' +
+                                            '                                            <form class="form-inline" id="form_comment_' + result[k].id + '">\n' +
                                             '                                                <div class="alert alert-danger" id="error_' + result[k].id + '" role="alert" style="display:none"></div>\n' +
                                             '                                                <div class="form-group">\n' +
                                             '                                                    <input type="text" class="form-control" name="comment" id="comment_' + result[k].id + '" placeholder="enter comment">\n' +
@@ -135,7 +136,7 @@
                                             '                                        </div>\n' +
                                             '                                        <div class="clearfix"></div>\n' +
                                             '\n' +
-                                            '                                        <div class="comments">\n';
+                                            '                                        <div class="comments_' + result[k].id + '">\n';
                                                                                     for (var key in result[k].comments) {
                                                                                     Temp += '<div class="comment">\n' +
                                                 '                                                <a href="/user/' + result[k].comments[key].user_id + '" class="comment-avatar pull-left"><img src="/img/user.png" alt="" title="' + result[k].comments[key].name + '"></a>\n' +
@@ -145,8 +146,8 @@
                                                 '                                            </div>\n' +
                                                                                             '<p>' + result[k].comments[key].created_at + '</p>';
                                                                                     }
-                                                                                    if(result[k].comments){
-                                                                                        Temp += '<p><a id="shaw_all" href="#">Все комментарии</a></p>';
+                                                                                    if ( result[k].comments.length) {
+                                                                                        Temp += '<div><form id="form_view_all_' + result[k].id + '"><a href="#" class="view_all" id="view_' + result[k].id + '">Все комментарии</a></form></div>';
                                                                                     }
                                              Temp += '                                         <div class="clearfix">\n' +
                                             '                                            </div>\n' +
@@ -157,7 +158,6 @@
                                             '                        </div>';
                                         document.getElementById("posts").innerHTML = Temp;
                                     }
-
                                     function getLikes() {
                                         $.ajax({
                                             method: 'GET',
@@ -182,7 +182,6 @@
                                         e.preventDefault();
                                         var post_id =  $(this).attr('id').slice(5);
                                         token = $('#form_' + post_id).find( $('input[name="_token"]')).val();
-                                        console.log(token);
                                         var user_id = '{{\Illuminate\Support\Facades\Auth::user()->id}}';
                                         $.ajax({
                                             beforeSend: function(xhr) {
@@ -200,16 +199,45 @@
                                         });
                                     });
 
+                                    $(".view_all").on('click', function (e) {
+                                        e.preventDefault();
+                                        var post_id =  $(this).attr('id').slice(5);
+                                        token = $('#form_view_all_' + post_id).find( $('input[name="_token"]')).val();
+                                        $.ajax({
+                                            beforeSend: function(xhr) {
+                                                xhr.setRequestHeader('X-CSRF-Token', token);
+                                            },
+                                            method: 'GET',
+                                            url: '{{route('comment.get')}}',
+                                            data: {'post_id': post_id},
+                                            error: function (xhr) {
+                                            },
+                                            success: function (response, status, xhr) {
+                                                var result = jQuery.parseJSON(response);
+                                                if (result){
+                                                    for (var key in result.comments) {
+                                                        htmlComments = '<div class="comment">\n' +
+                                                            '       <a href="/user/' + result.comments[key].user_id + '" class="comment-avatar pull-left"><img src="/img/user.png" alt="" title="' + result.comments[key].name + '"></a>\n' +
+                                                            '       <div class="comment-text">\n' +
+                                                            '           <p>' + result.comments[key].caption + '</p>\n' +
+                                                            '       </div>\n' +
+                                                            '    </div>\n' +
+                                                            '<p>' + result.comments[key].created_at + '</p>';
+                                                    }
 
-
-
-
+                                                    $(".comments_" + result.post_id).append(htmlComments);
+                                                    $("#view_" + result.post_id).hide();
+                                                }
+                                            },
+                                        });
+                                    });
                                 }
                             },
                         });
                     }
 
                     getData();
+
 
 
         });

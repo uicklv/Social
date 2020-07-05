@@ -30,7 +30,7 @@ services:
     ports:
       - "3306:3306"
     environment:
-      - MYSQL_DATABASE=grill
+      - MYSQL_DATABASE=social
       - MYSQL_ROOT_PASSWORD=secret
     networks:
       - app
